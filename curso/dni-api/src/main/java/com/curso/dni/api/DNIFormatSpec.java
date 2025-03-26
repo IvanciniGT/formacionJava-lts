@@ -17,5 +17,5 @@ public class DNIFormatSpec {
     @Builder.Default
     boolean cerosALaIzquierda = false;
     @Builder.Default
-    boolean espaciosALaDerecha= false;
+    Integer anchoMinimo = 0;
 }
