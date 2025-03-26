@@ -177,11 +177,11 @@ Son la forma en la que podemos usar un lenguaje para expresarnos. No es algo exc
 - Se añaden los métodos .of en todas las interfaces funcionales de Collections (List, Map, Set...)
 - La posibilidad de usar anotaciones en los argumentos de una expresión lambda.... Precisamente para evitar ambigüedades en el código.
    (@NonNull Integer numero) -> numero * 7 
-- Proyecto Jigsaw: Módulos
+- Proyecto Jigsaw: Módulos <- Principio de inversión de dependencias
 
 # Novedades de Java 1.17
 - Records
-- Sealed classes/interfaces
+- Sealed classes/interfaces <- Principio de Liskov / Open-Closed
 
     module-info.java
 ```java
