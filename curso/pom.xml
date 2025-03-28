@@ -15,6 +15,7 @@
         <module>dni-impl</module>
         <module>app</module>
         <module>fechas</module>
+        <module>ContarPalabras</module>
     </modules>
 
 

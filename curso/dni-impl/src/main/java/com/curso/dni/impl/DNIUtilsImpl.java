@@ -5,7 +5,6 @@ import lombok.NonNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.IntStream;
 
 public class DNIUtilsImpl implements DNIUtils {
 
@@ -26,14 +25,14 @@ public class DNIUtilsImpl implements DNIUtils {
     );
 
     @Override
-    public Respuesta of(@NonNull String dni) {
+    public DNI of(@NonNull String dni) {
         return VALIDACIONES.entrySet().stream() // Para cada validación (PATRON + ERROR)
                 .map(
                         validation -> dni.matches(validation.getKey()) ? null : validation.getValue()
                 ) // Devuelve el error si no se cumple el patrón ... ACABO CON UNA ESPECIE DE LISTA (Stream) que contiene errores o nulos
                 .filter(Objects::nonNull) // Pues me quedo con los errores
                 .findFirst()
-                .map(tipoError -> ((Respuesta) new ErrorDNI(tipoError, dni)) ) // Aplica la transformación SOLO SI el optional no está vacío. (Optional<Respuesta>)
+                .map(tipoError -> ((DNI) new DNIInvalido(tipoError, dni)) ) // Aplica la transformación SOLO SI el optional no está vacío. (Optional<Respuesta>)
                 .orElseGet(() -> { // Si no hay respuesta, devuelve lo que devuelva esta función: Otra Respuesta (DNI)
                     String dniLimpio = dni.replaceAll("[. -]", "");
                     return of(
@@ -75,31 +74,31 @@ public class DNIUtilsImpl implements DNIUtils {
 
 
     @Override
-    public Respuesta of(int numero, char letra) {
+    public DNI of(int numero, char letra) {
         // convertir la letra a mayúsculas
         letra = Character.toUpperCase(letra);
         // Llamar a la de abajo
-        Respuesta respuesta = of(numero);
+        DNI respuesta = of(numero);
         // Si el dni se procesa bien y su letra es la correcta, devuelvo el DNI
-        if(respuesta instanceof DNI dni && dni.getLetra() == letra){
+        if(respuesta instanceof DNIValido dni && dni.getLetra() == letra){
             return dni;
         } else {
-            return new ErrorDNI(
+            return new DNIInvalido(
                     // Si ha habido un problema con la función anterior, devuelvo ese problema
                     // Si no, devuelvo que la letra es incorrecta
-                    !respuesta.isValid() ? ((ErrorDNI) respuesta).getProblema() : TipoErrorDNI.LETRA_INCORRECTA,
+                    !respuesta.isValid() ? ((DNIInvalido) respuesta).getError() : TipoErrorDNI.LETRA_INCORRECTA,
                     "" + numero + letra
             );
         }
     }
 
     @Override
-    public Respuesta of(int numero) {
+    public DNI of(int numero) {
         // Si está fuera de rango, doy un error
         if(numero < NUMERO_DNI_MINIMO || numero > NUMERO_DNI_MAXIMO){
-            return new ErrorDNI(TipoErrorDNI.NUMERO_FUERA_DE_RANGO, String.valueOf(numero));
+            return new DNIInvalido(TipoErrorDNI.NUMERO_FUERA_DE_RANGO, String.valueOf(numero));
         } else {
-            return new DNI(numero, calcularLetra(numero));
+            return new DNIValido(numero, calcularLetra(numero));
         }
     }
 
@@ -117,12 +116,12 @@ public class DNIUtilsImpl implements DNIUtils {
 
 
     @Override
-    public String format(@NonNull DNI dni) {
+    public String format(@NonNull DNIValido dni) {
         return format(dni, DNIFormatSpec.builder().build());
     }
 
     @Override
-    public String format(@NonNull DNI dni, @NonNull DNIFormatSpec spec) {
+    public String format(@NonNull DNIValido dni, @NonNull DNIFormatSpec spec) {
         // Ceros a la izquierda
         String parteNumerica = ""+dni.getNumero();
         if(spec.isCerosALaIzquierda()){
@@ -156,7 +155,7 @@ public class DNIUtilsImpl implements DNIUtils {
 
 
     @Override
-    public List<DNI> extract(@NonNull String texto) {
+    public List<DNIValido> extract(@NonNull String texto) {
         return List.of();
     }
 
@@ -175,7 +174,7 @@ public class DNIUtilsImpl implements DNIUtils {
     }
 
     @Override
-    public List<DNI> random(int cantidad) {
+    public List<DNI> random(long cantidad) {
         /*
         List<DNI> dnis = new ArrayList<>();
         for(int i = 0; i < cantidad; i++){

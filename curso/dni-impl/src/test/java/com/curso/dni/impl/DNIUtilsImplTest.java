@@ -1,7 +1,6 @@
 package com.curso.dni.impl;
 
 import com.curso.dni.api.*;
-import lombok.NonNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,26 +21,26 @@ class DNIUtilsImplTest {
         int numeroValido = 230000;
         char letraCorrecta = 'T';
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(numeroValido);
+        DNI respuestaDevuelta = dniUtils.of(numeroValido);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertTrue(respuestaDevuelta.isValid());
-        assertInstanceOf(DNI.class, respuestaDevuelta);
-        assertEquals(numeroValido, ((DNI)respuestaDevuelta).getNumero());
-        assertEquals(letraCorrecta, ((DNI)respuestaDevuelta).getLetra());
+        assertInstanceOf(DNIValido.class, respuestaDevuelta);
+        assertEquals(numeroValido, ((DNIValido)respuestaDevuelta).getNumero());
+        assertEquals(letraCorrecta, ((DNIValido)respuestaDevuelta).getLetra());
     }
     @ParameterizedTest
     @ValueSource(ints = {-2000,200000000})
     @DisplayName("Crear un DNI desde un Número inválido")
     void crearDniDesdeUnNumeroInvalido(int numeroValido) {
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(numeroValido);
+        DNI respuestaDevuelta = dniUtils.of(numeroValido);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertFalse(respuestaDevuelta.isValid());
-        assertInstanceOf(ErrorDNI.class, respuestaDevuelta);
-        assertEquals(Integer.toString(numeroValido), ((ErrorDNI)respuestaDevuelta).getOriginal());
-        assertEquals(TipoErrorDNI.NUMERO_FUERA_DE_RANGO, ((ErrorDNI)respuestaDevuelta).getProblema());
+        assertInstanceOf(DNIInvalido.class, respuestaDevuelta);
+        assertEquals(Integer.toString(numeroValido), ((DNIInvalido)respuestaDevuelta).getOriginal());
+        assertEquals(TipoErrorDNI.NUMERO_FUERA_DE_RANGO, ((DNIInvalido)respuestaDevuelta).getError());
     }
 
 
@@ -53,13 +52,13 @@ class DNIUtilsImplTest {
         char letraCorrecta = 'T';
         String textoValido= ""+numeroValido+letraCorrecta;
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(textoValido);
+        DNI respuestaDevuelta = dniUtils.of(textoValido);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertTrue(respuestaDevuelta.isValid());
-        assertInstanceOf(DNI.class, respuestaDevuelta);
-        assertEquals(numeroValido, ((DNI)respuestaDevuelta).getNumero());
-        assertEquals(letraCorrecta, ((DNI)respuestaDevuelta).getLetra());
+        assertInstanceOf(DNIValido.class, respuestaDevuelta);
+        assertEquals(numeroValido, ((DNIValido)respuestaDevuelta).getNumero());
+        assertEquals(letraCorrecta, ((DNIValido)respuestaDevuelta).getLetra());
     }
 
     @Test
@@ -68,13 +67,13 @@ class DNIUtilsImplTest {
         // Dado
         String textoConSeparador = "2300000$T";
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(textoConSeparador);
+        DNI respuestaDevuelta = dniUtils.of(textoConSeparador);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertFalse(respuestaDevuelta.isValid());
-        assertInstanceOf(ErrorDNI.class, respuestaDevuelta);
-        assertEquals(textoConSeparador, ((ErrorDNI)respuestaDevuelta).getOriginal());
-        assertEquals(TipoErrorDNI.FORMATO_INCORRECTO, ((ErrorDNI)respuestaDevuelta).getProblema());
+        assertInstanceOf(DNIInvalido.class, respuestaDevuelta);
+        assertEquals(textoConSeparador, ((DNIInvalido)respuestaDevuelta).getOriginal());
+        assertEquals(TipoErrorDNI.FORMATO_INCORRECTO, ((DNIInvalido)respuestaDevuelta).getError());
     }
     @Test
     @DisplayName("Crear un DNI sin letra")
@@ -82,13 +81,13 @@ class DNIUtilsImplTest {
         // Dado
         String textoSinLetra = "2300000";
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(textoSinLetra);
+        DNI respuestaDevuelta = dniUtils.of(textoSinLetra);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertFalse(respuestaDevuelta.isValid());
-        assertInstanceOf(ErrorDNI.class, respuestaDevuelta);
-        assertEquals(textoSinLetra, ((ErrorDNI)respuestaDevuelta).getOriginal());
-        assertEquals(TipoErrorDNI.LETRA_INCORRECTA, ((ErrorDNI)respuestaDevuelta).getProblema());
+        assertInstanceOf(DNIInvalido.class, respuestaDevuelta);
+        assertEquals(textoSinLetra, ((DNIInvalido)respuestaDevuelta).getOriginal());
+        assertEquals(TipoErrorDNI.LETRA_INCORRECTA, ((DNIInvalido)respuestaDevuelta).getError());
     }
 
     @Test
@@ -97,20 +96,20 @@ class DNIUtilsImplTest {
         // Dado
         String textoConNumeroIncorrecto = "FEDERIC-O";
         // Cuando
-        Respuesta respuestaDevuelta = dniUtils.of(textoConNumeroIncorrecto);
+        DNI respuestaDevuelta = dniUtils.of(textoConNumeroIncorrecto);
         // Entonces
         assertNotNull(respuestaDevuelta);
         assertFalse(respuestaDevuelta.isValid());
-        assertInstanceOf(ErrorDNI.class, respuestaDevuelta);
-        assertEquals(textoConNumeroIncorrecto, ((ErrorDNI)respuestaDevuelta).getOriginal());
-        assertEquals(TipoErrorDNI.NUMERO_INCORRECTO, ((ErrorDNI)respuestaDevuelta).getProblema());
+        assertInstanceOf(DNIInvalido.class, respuestaDevuelta);
+        assertEquals(textoConNumeroIncorrecto, ((DNIInvalido)respuestaDevuelta).getOriginal());
+        assertEquals(TipoErrorDNI.NUMERO_INCORRECTO, ((DNIInvalido)respuestaDevuelta).getError());
     }
 
     @Test
     @DisplayName("Crear muchos DNIs Aleatorios")
     void generarDNIsAleatorios(){
         int cuantos = 50;
-        List<DNI> dnisGenerados = dniUtils.random(cuantos);
+        List<DNIValido> dnisGenerados = dniUtils.random(cuantos);
         assertNotNull(dnisGenerados);
         assertEquals(cuantos, dnisGenerados.size());
         dnisGenerados.forEach(dni -> {
@@ -124,7 +123,7 @@ class DNIUtilsImplTest {
     @DisplayName("Formatear un DNI")
     void formatearDNI(){
         // Dado
-        DNI dni = new DNI(2300000, 'T');
+        DNIValido dni = new DNIValido(2300000, 'T');
         DNIFormatSpec formato = DNIFormatSpec.builder()
                                             .mayuscula(false)
                                             .separadorDigitos(true)

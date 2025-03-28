@@ -6,14 +6,14 @@ import java.util.List;
 
 public interface DNIUtils {
 
-    Respuesta of(@NonNull String dni);
-    Respuesta of(int numero, char letra);
-    Respuesta of(int numero);
-    String format(@NonNull DNI dni);
-    String format(@NonNull DNI dni, @NonNull DNIFormatSpec spec);
-    List<DNI> extract(@NonNull String texto);
+    DNI of(@NonNull String dni);
+    DNI of(int numero, char letra);
+    DNI of(int numero);
+    String format(@NonNull DNIValido dni);
+    String format(@NonNull DNIValido dni, @NonNull DNIFormatSpec spec);
+    List<DNIValido> extract(@NonNull String texto);
     DNI random();
-    List<DNI> random(int cantidad);
+    List<DNI> random(long cantidad);
 
 }
 

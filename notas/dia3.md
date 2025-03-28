@@ -193,3 +193,43 @@ Queremos el típico pie de mensaje de red social:
 
 Vamos a montar una segunda función... que haga lo mismo pero con 2 fechas
 Vamos a montar una segunda función... que haga lo mismo pero con 1 fecha y una zona horaria.
+
+
+Operador ternario, nos permite escribir un if como expresión.
+
+    var valor = condicion ? expresión : expresión
+
+Los if, también se pueden escribir como statements.
+
+    if(condicion){
+        // statement
+    } else {
+        // statement
+    }
+
+Eso lo hemos podido hacer siempre en java.
+
+El if es el único condicional que tenemos en JAVA? switch
+
+Switch como statement:
+
+    switch(expresion){
+        case valor1:
+            // statement
+            break;
+        case valor2:
+            // statement
+            break;
+        default:
+            // statement
+    }
+
+En Java 14 se incluyen los switch como expresiones:
+var valor = switch(variable){
+    case valor1 -> expresion1;
+    case valor2 -> {
+        // Statement
+        yield expresion2;
+    }
+    default -> expresion3;
+}

@@ -3,7 +3,7 @@ package com.curso.dni.api;
 import lombok.Value;
 
 @Value
-public class ErrorDNI extends Respuesta {
-    TipoErrorDNI problema;
+public class DNIInvalido extends DNI {
+    TipoErrorDNI error;
     String original;
 }

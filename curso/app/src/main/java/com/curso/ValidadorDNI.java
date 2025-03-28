@@ -1,14 +1,14 @@
 package com.curso;
 
 import com.curso.dni.api.DNIUtils; // Ésta está guay. Apunta a una API
-import com.curso.dni.api.Respuesta; // Ésta también está guay. Apunta a una API
+import com.curso.dni.api.DNI; // Ésta también está guay. Apunta a una API
 
 import java.util.ServiceLoader;
 
 //import com.curso.dni.impl.DNIUtilsImpl; // Pero esta linea es una CAGADA !!!!
 // Nos estamos pasando por las narices el principio de inversión de dependencias
 
-public class Aplicacion {
+public class ValidadorDNI {
 
     public static void main(String[] args){
 
@@ -26,7 +26,7 @@ public class Aplicacion {
             System.exit(1);
         }
         DNIUtils dniUtils = implementaciones.iterator().next();
-        Respuesta respuesta= dniUtils.of(dni);
+        DNI respuesta= dniUtils.of(dni);
         respuesta.ifValid(dniValido -> System.out.println("DNI válido: " + dniValido))
                  .ifError(error -> System.out.println("Error: " + error));
     }
